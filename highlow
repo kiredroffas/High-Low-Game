@@ -1,0 +1,116 @@
+#!/bin/bash
+
+# Erik Safford
+# Highlow Game
+# OCT 2017
+
+#pos. int entered after 'highlow' on cmd line = HIGH
+HIGH=$1
+
+#LOW is always 1
+LOW=1
+
+#If a given range # is given from cmd line
+if [[ $1 != "" ]]
+  then
+    echo ""
+    #Echo experienced user welcome
+    echo "Welcome to HIGHLOW GAME! You obviously know what your doing, so let's get started! Pick a number between 1 and $HIGH and press any key to continue"
+    #Read for 'press any key to continue', not used for anything else
+    read -s -n 1 garbage
+  #Else if no range # is given from cmd line
+  else
+    #Default range is 1-100
+    HIGH=100
+    echo ""
+    #Echo newbie welcome 
+    echo "Welcome to HIGHLOW GAME! The object of the game is for me to guess your number! All you gotta do is pick a number between 1 and 100, and I'll guess a number. If my guess is too high press 'h'. If my guess is too low press 'l'. If I guess the number correct press 'c'. Press any key to continue."
+    #Read for 'press any key to continue', not used for anything else
+    read -s -n 1 garbage
+fi
+    
+
+#GUESS is the average of HIGH and LOW
+GUESS=$((($HIGH+$LOW)/2))
+#Guess users number
+echo "Hmm... Is it $GUESS?"
+#Read in users input (l,h,c)
+read -n 1 userinput
+    
+#While statement is always true    
+while [[ HIGH != "" ]]
+  do
+    #Try counter, each time a guess is made it increases by 1
+    TRIES=$((TRIES+1))
+    
+    #If User inputs 'c'
+    if [[ $userinput == "c" ]]
+      then
+        echo ""
+        #Echo win statement and number of tries, and exit
+        echo "It only took $TRIES guess(s)?! Too easy! Pick a harder number next time!"
+        exit
+    #Else if User inputs 'l'
+    elif [[ $userinput == "l" ]]
+      then
+        #Take previous GUESS+1 and set equal to LOW
+        LOW=$(($GUESS+1))
+        #New average of HIGH and LOW makes new GUESS
+        GUESS=$((($HIGH+$LOW)/2))
+          #Cheating statement, i.e. if user inputs wrong inputs or forgets number
+          if [[ $LOW -eq $(($HIGH+1)) ]]
+            then
+              echo ""
+              echo "Invalid input detected, exiting now. . ."
+              exit
+          fi
+          #Cheating statement, i.e. if user inputs wrong inputs or forgets number
+          if [[ $LOW -eq 101 ]]
+            then
+              echo ""
+              echo "Invalid input detected, exiting now. . ."
+              exit
+          fi
+
+        echo ""
+        #If no cheating make another GUESS
+        echo "Hmm... Is it $GUESS?"
+        #Read in new user input
+        read -n 1 userinput
+    #Else if user input 'h'
+    elif [[ $userinput == "h" ]]
+      then
+        #Take previous GUESS-1 and set equal to HIGH
+        HIGH=$(($GUESS-1))
+        #New average of HIGH and LOW makes new GUESS
+        GUESS=$((($HIGH+$LOW)/2))
+        #Cheating statement, i.e. if user inputs wrong inputs or forgets number
+        if [[ $LOW -eq $(($HIGH+1)) ]]
+          then
+            echo ""
+            echo "Invalid input detected, exiting now. . ."
+            exit
+        fi
+        #Cheating statement, i.e. if user inputs wrong inputs or forgets number
+        if [[ $HIGH -eq 1 ]]
+          then
+            echo ""
+            echo "Invalid input detected, exiting now. . ."
+            exit
+        fi
+        echo ""
+        #If no cheating make another GUESS
+        echo "Hmm... Is it $GUESS?"
+        #Read in new user input
+        read -n 1 userinput
+    #Else if user enters something other then h,l,or c
+    else
+      echo ""
+      echo "Did you forget the rules? Press 'h' for high, 'l' for low, or 'c' for correct."
+      #Subtract 1 from try counter b/c program did not make a guess
+      TRIES=$((TRIES-1))
+      #Read in new user input
+      read -n 1 userinput
+    fi
+     
+done
